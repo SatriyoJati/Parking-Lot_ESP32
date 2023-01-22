@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+
 #ifndef KEYPAD_H
 #define KEYPAD_H
 
@@ -26,4 +27,6 @@ char Keypad_scan(Keypad* keypad);
 char Keypad_scan(Keypad* keypad);
 void Keypad_debounce();
 
+
+void vKeypadTask(void * pvParameters);
 #endif

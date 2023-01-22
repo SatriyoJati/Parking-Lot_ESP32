@@ -1,5 +1,8 @@
 #include "keypad.h"
 #include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
 
 const char matrix_keys[4][4] = {{'1', '2', '3', 'A'},
                                 {'4', '5', '6', 'B'},
@@ -64,22 +67,23 @@ char Keypad_scan(Keypad *pkeypad)
         }
         printf("\n");
     }
-    return -1;
+    return 0;
 }
 
 void vKeypadTask( void *pvParameters)
 {
     char keypressed;
     
-    Keypad Struct = (Keypad) *pvParameters;
-    QueueHandle_t xKeyQueue = xQueueCreate(8, sizeof(Keypad));
-    BaseType_t status_send;
+    Keypad* pkeypad = (Keypad *) pvParameters;
+    QueueHandle_t xKeyQueue = xQueueCreate(10, sizeof(Keypad));
+    BaseType_t status_send =pdFAIL;
 
     for(;;)
     {
-        keypressed = Keypad_scan();
-        if (keypressed != -1)
-            status_send = xQueueSendToFront(xKeyQueue, &keypressed, pdMS_TO_TICKS(10));
+        // printf("Send data error");
+        keypressed = Keypad_scan(pkeypad);
+        if (keypressed != 0)
+            status_send = xQueueSendToFront(xKeyQueue, &keypressed, 0);
 
         if(status_send == pdPASS)
         {
@@ -89,6 +93,7 @@ void vKeypadTask( void *pvParameters)
         {
             printf("queue is full");
         }
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 
     vTaskDelete( NULL);
