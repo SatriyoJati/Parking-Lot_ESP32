@@ -35,9 +35,7 @@ void app_main(void)
 {
     Keypad_init(&mykeypad);
     char buf;
-
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        buf = Keypad_scan(&mykeypad);
-    }
+    // vTaskDelay(pdMS_TO_TICKS(1000));
+    xTaskCreate(vKeypadTask, "keypad_task", 2000, (void *) &mykeypad, 1,NULL);
+    
 }
