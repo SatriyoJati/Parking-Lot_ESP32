@@ -25,8 +25,6 @@ void Keypad_init(Keypad *pkeypad);
 char Keypad_scan(Keypad* keypad);
 #endif 
 char Keypad_scan(Keypad* keypad);
-void Keypad_debounce();
-
 
 void vKeypadTask(void * pvParameters);
 #endif
