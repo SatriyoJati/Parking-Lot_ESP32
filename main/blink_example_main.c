@@ -15,6 +15,8 @@
 #include "sdkconfig.h"
 #include "FreeAct.h"
 #include "keypad.h"
+// #include "mynew.h"
+#include "wifi.h"
 
 
 Keypad mykeypad =
@@ -34,8 +36,7 @@ Keypad mykeypad =
 void app_main(void)
 {
     Keypad_init(&mykeypad);
-    char buf;
-    // vTaskDelay(pdMS_TO_TICKS(1000));
-    xTaskCreate(vKeypadTask, "keypad_task", 2000, (void *) &mykeypad, 1,NULL);
-    
+    Wifi_handle_t mywifi = Wifi_create();
+    Wifi_init(mywifi);
+    xTaskCreatePinnedToCore(vKeypadTask, "keypad_task", 2000, (void *)&mykeypad, 2, NULL);
 }
