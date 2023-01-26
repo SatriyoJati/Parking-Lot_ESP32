@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-
 #ifndef KEYPAD_H
 #define KEYPAD_H
 

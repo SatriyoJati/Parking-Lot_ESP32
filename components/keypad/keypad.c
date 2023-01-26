@@ -7,6 +7,7 @@
 #define COUNT 8
 #define DEBOUNCING
 
+
 static const char matrix_keys[4][4] = {{'1', '2', '3', 'A'},
                                 {'4', '5', '6', 'B'},
                                 {'7', '8', '9', 'C'},
@@ -38,7 +39,7 @@ static int Keypad_debounce(gpio_num_t rowPin)
     uint8_t raw_state = gpio_get_level(rowPin);
     if (raw_state == debounced_state)
     {
-        printf("Key_Debounce : state is same\n");
+        // printf("Key_Debounce : state is same\n");
         if (debounced_state)
             count = COUNT;
         else
@@ -46,8 +47,8 @@ static int Keypad_debounce(gpio_num_t rowPin)
     }
     else
     {
-        printf("Key_Debounce : Change during debouncing\n");
-        printf("Key_Debounce : count : %ld\n", count);
+        // printf("Key_Debounce : Change during debouncing\n");
+        // printf("Key_Debounce : count : %ld\n", count);
         if (--count == 0)
         {
             // printf("Key_Debounce : Finally Stable ------whooozaaah\n");
@@ -138,12 +139,15 @@ void vKeypadTask(void *pvParameters)
     QueueHandle_t xKeyQueue = xQueueCreate(10, sizeof(Keypad));
     BaseType_t status_send = pdFAIL;
     xQueueReset(xKeyQueue);
-    printf("number of messages in queue: %d", uxQueueMessagesWaiting(xKeyQueue));
+    const TickType_t xFrequency = pdMS_TO_TICKS(10);
+    TickType_t LastWakeTime;
+    printf("number of messages in queue: %d\n", uxQueueMessagesWaiting(xKeyQueue));
 
     for (;;)
     {
         // printf("Send data error");
         keypressed = Keypad_scan(pkeypad);
+        vTaskDelayUntil(&LastWakeTime, xFrequency);
         // printf("KeyGet : %c\n",keypressed);
         if (keypressed != 0)
         {
@@ -158,8 +162,7 @@ void vKeypadTask(void *pvParameters)
             }
         }
 
-        // vTaskDelay(pdMS_TO_TICKS(100));
+        
     }
-    vQueueDelete(xKeyQueue);
-    vTaskDelete(NULL);
+
 }
