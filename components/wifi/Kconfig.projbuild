@@ -1,0 +1,14 @@
+menu "Wifi"
+
+    config ESP_WIFI_SSID
+        string "Wifi SSID"
+        default "Feedback"
+        help 
+            SSID (network name) for the example to connect to
+    
+    config ESP_WIFI_PASS
+        string "Wifi Password"
+        default "mypassword"
+        help
+            Password for AP
+endmenu
